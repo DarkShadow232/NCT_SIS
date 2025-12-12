@@ -1,0 +1,182 @@
+<UserControl x:Class="UniversityManagementSystem.Views.SectionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="350"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Left Panel - Section List -->
+        <Grid Grid.Column="0" Margin="0,0,20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Toolbar -->
+            <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="16">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="+ Add Section" Style="{StaticResource BaseButtonStyle}" 
+                            Command="{Binding AddCommand}" Margin="0,0,10,0"/>
+                    <Button Content="Edit" Style="{StaticResource AccentButtonStyle}" 
+                            Command="{Binding EditCommand}" Margin="0,0,10,0"/>
+                    <Button Content="Delete" Background="#DC2626" Foreground="White" 
+                            Style="{StaticResource BaseButtonStyle}" 
+                            Command="{Binding DeleteCommand}"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Filter -->
+            <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <ComboBox Grid.Column="0" 
+                              ItemsSource="{Binding Courses}"
+                              SelectedValue="{Binding FilterCourseId}"
+                              SelectedValuePath="Id"
+                              DisplayMemberPath="Name"
+                              Background="{StaticResource CardBrush}"
+                              Foreground="{StaticResource TextPrimaryBrush}"
+                              Margin="0,0,10,0"/>
+                    
+                    <Button Grid.Column="1" Content="Clear" Style="{StaticResource IconButtonStyle}"
+                            Command="{Binding ClearFilterCommand}" Padding="12,8"/>
+                </Grid>
+            </Border>
+            
+            <!-- Sections DataGrid -->
+            <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="0">
+                <DataGrid ItemsSource="{Binding Sections}" 
+                          SelectedItem="{Binding SelectedSection}"
+                          Style="{StaticResource ModernDataGridStyle}"
+                          ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeaderStyle}"
+                          CellStyle="{StaticResource ModernDataGridCellStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Section" Binding="{Binding Name}" Width="120"/>
+                        <DataGridTextColumn Header="Course" Binding="{Binding Course.Name}" Width="*"/>
+                        <DataGridTextColumn Header="Schedule" Binding="{Binding Schedule}" Width="140"/>
+                        <DataGridTextColumn Header="Room" Binding="{Binding Room}" Width="100"/>
+                        <DataGridTemplateColumn Header="Enrollment" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Run Text="{Binding EnrolledCount, Mode=OneWay}"/>
+                                        <Run Text="/"/>
+                                        <Run Text="{Binding Capacity}"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+            
+            <!-- Students in Section -->
+            <Border Grid.Row="3" Style="{StaticResource CardStyle}" Margin="0,16,0,0" Padding="16"
+                    Visibility="{Binding SelectedSection, Converter={StaticResource NullToVisibilityConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Text="Enrolled Students" Style="{StaticResource SectionTitleStyle}" 
+                               Margin="0,0,0,12"/>
+                    
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding SectionStudents}" MaxHeight="150">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource SurfaceBrush}" 
+                                        CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}" 
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding YearLevelDisplay}" 
+                                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- Right Panel - Section Form -->
+        <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Form Header -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                    <TextBlock Text="Section Details" Style="{StaticResource SectionTitleStyle}"/>
+                    <TextBlock Text="View and edit section information" 
+                               Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,4,0,0"/>
+                </StackPanel>
+                
+                <!-- Form Fields -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel IsEnabled="{Binding IsEditing}">
+                        <TextBlock Text="Section Name" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding FormName, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Course" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Courses}" 
+                                  SelectedValue="{Binding FormCourseId}"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  Background="{StaticResource CardBrush}"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  Padding="12,10" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Capacity" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding FormCapacity, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Schedule" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding FormSchedule, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Room" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding FormRoom, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBoxStyle}"/>
+                    </StackPanel>
+                </ScrollViewer>
+                
+                <!-- Form Actions -->
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                    <Button Content="Cancel" Style="{StaticResource IconButtonStyle}" 
+                            Command="{Binding CancelCommand}" 
+                            Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Padding="16,10" Margin="0,0,10,0"/>
+                    <Button Content="Save Changes" Style="{StaticResource BaseButtonStyle}" 
+                            Command="{Binding SaveCommand}"
+                            Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
+
+

@@ -1,0 +1,162 @@
+<UserControl x:Class="UniversityManagementSystem.Views.CoursesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="350"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Left Panel - Course List -->
+        <Grid Grid.Column="0" Margin="0,0,20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Toolbar -->
+            <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="16">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="+ Add Course" Style="{StaticResource BaseButtonStyle}" 
+                            Command="{Binding AddCommand}" Margin="0,0,10,0"/>
+                    <Button Content="Edit" Style="{StaticResource AccentButtonStyle}" 
+                            Command="{Binding EditCommand}" Margin="0,0,10,0"/>
+                    <Button Content="Delete" Background="#DC2626" Foreground="White" 
+                            Style="{StaticResource BaseButtonStyle}" 
+                            Command="{Binding DeleteCommand}"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Filters -->
+            <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <ComboBox Grid.Column="0" Width="120" Margin="0,0,10,0"
+                              SelectedValue="{Binding FilterYearLevel}"
+                              SelectedValuePath="Tag"
+                              Background="{StaticResource CardBrush}"
+                              Foreground="{StaticResource TextPrimaryBrush}">
+                        <ComboBoxItem Content="All Years" Tag="{x:Null}"/>
+                        <ComboBoxItem Content="Year 1" Tag="1"/>
+                        <ComboBoxItem Content="Year 2" Tag="2"/>
+                        <ComboBoxItem Content="Year 3" Tag="3"/>
+                        <ComboBoxItem Content="Year 4" Tag="4"/>
+                    </ComboBox>
+                    
+                    <ComboBox Grid.Column="1" Width="180" 
+                              ItemsSource="{Binding Departments}"
+                              SelectedValue="{Binding FilterDepartmentId}"
+                              SelectedValuePath="Id"
+                              DisplayMemberPath="Name"
+                              Background="{StaticResource CardBrush}"
+                              Foreground="{StaticResource TextPrimaryBrush}"/>
+                    
+                    <Button Grid.Column="3" Content="Clear Filters" Style="{StaticResource IconButtonStyle}"
+                            Command="{Binding ClearFilterCommand}" Padding="12,8"/>
+                </Grid>
+            </Border>
+            
+            <!-- Courses DataGrid -->
+            <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="0">
+                <DataGrid ItemsSource="{Binding Courses}" 
+                          SelectedItem="{Binding SelectedCourse}"
+                          Style="{StaticResource ModernDataGridStyle}"
+                          ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeaderStyle}"
+                          CellStyle="{StaticResource ModernDataGridCellStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="100"/>
+                        <DataGridTextColumn Header="Course Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Credits" Binding="{Binding Credits}" Width="70"/>
+                        <DataGridTextColumn Header="Year" Binding="{Binding YearLevel}" Width="60"/>
+                        <DataGridTextColumn Header="Department" Binding="{Binding Department.Name}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+        
+        <!-- Right Panel - Course Form -->
+        <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Form Header -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                    <TextBlock Text="Course Details" Style="{StaticResource SectionTitleStyle}"/>
+                    <TextBlock Text="View and edit course information" 
+                               Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,4,0,0"/>
+                </StackPanel>
+                
+                <!-- Form Fields -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel IsEnabled="{Binding IsEditing}">
+                        <TextBlock Text="Course Name" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding FormName, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Course Code" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding FormCode, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Credits" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding CreditOptions}" 
+                                  SelectedItem="{Binding FormCredits}"
+                                  Background="{StaticResource CardBrush}"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  Padding="12,10" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Year Level" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding YearLevels}" 
+                                  SelectedItem="{Binding FormYearLevel}"
+                                  Background="{StaticResource CardBrush}"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  Padding="12,10" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Department" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Departments}" 
+                                  SelectedValue="{Binding FormDepartmentId}"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  Background="{StaticResource CardBrush}"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  Padding="12,10" Margin="0,0,0,16"/>
+                        
+                        <TextBlock Text="Description (Optional)" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding FormDescription, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBoxStyle}" 
+                                 Height="80" TextWrapping="Wrap" AcceptsReturn="True"
+                                 VerticalContentAlignment="Top"/>
+                    </StackPanel>
+                </ScrollViewer>
+                
+                <!-- Form Actions -->
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                    <Button Content="Cancel" Style="{StaticResource IconButtonStyle}" 
+                            Command="{Binding CancelCommand}" 
+                            Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Padding="16,10" Margin="0,0,10,0"/>
+                    <Button Content="Save Changes" Style="{StaticResource BaseButtonStyle}" 
+                            Command="{Binding SaveCommand}"
+                            Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
+
+

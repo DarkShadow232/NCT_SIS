@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCT University Management System - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #112250;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            background: white;
+        }
+        
+        @media print {
+            body {
+                padding: 15mm;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            h2 {
+                page-break-after: avoid;
+            }
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 3px solid #cb810d;
+            margin-bottom: 30px;
+        }
+        
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #112250, #1a3470);
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cb810d;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        h1 {
+            color: #112250;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #cb810d;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        h2 {
+            color: #112250;
+            font-size: 22px;
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #cb810d;
+        }
+        
+        h3 {
+            color: #112250;
+            font-size: 18px;
+            margin: 20px 0 10px;
+        }
+        
+        h4 {
+            color: #75757d;
+            font-size: 14px;
+            margin: 15px 0 8px;
+        }
+        
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        
+        th {
+            background: #112250;
+            color: white;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .highlight {
+            background: #FEF3C7;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #cb810d;
+            margin: 15px 0;
+        }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 15px 0;
+            white-space: pre;
+        }
+        
+        .erd-diagram {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #cb810d;
+        }
+        
+        .feature-card h4 {
+            color: #112250;
+            margin: 0 0 8px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin: 2px;
+        }
+        
+        .badge-primary { background: #112250; color: white; }
+        .badge-success { background: #10B981; color: white; }
+        .badge-warning { background: #F59E0B; color: white; }
+        .badge-danger { background: #EF4444; color: white; }
+        .badge-info { background: #3B82F6; color: white; }
+        
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            padding: 5px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .toc li:last-child {
+            border-bottom: none;
+        }
+        
+        ul, ol {
+            margin: 10px 0 10px 25px;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            color: #75757d;
+            font-size: 12px;
+        }
+        
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .color-swatch {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover Page -->
+    <div class="header">
+        <div class="logo-placeholder">NCT</div>
+        <h1>NCT University Management System</h1>
+        <p class="subtitle">New Cairo Technology University</p>
+        <p style="color: #75757d; margin-top: 15px;">Comprehensive Academic Management Solution</p>
+        <p style="color: #75757d; font-size: 12px; margin-top: 30px;">
+            Version 1.0.0 | December 2024
+        </p>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="toc">
+        <h3>📋 Table of Contents</h3>
+        <ul>
+            <li>1. Overview</li>
+            <li>2. Features</li>
+            <li>3. Technology Stack</li>
+            <li>4. System Architecture</li>
+            <li>5. Entity Relationship Diagram (ERD)</li>
+            <li>6. Database Schema</li>
+            <li>7. Modules Description</li>
+            <li>8. Grading System</li>
+            <li>9. Installation & Setup</li>
+            <li>10. Color Palette & Branding</li>
+        </ul>
+    </div>
+
+    <!-- Section 1: Overview -->
+    <h2>1. Overview</h2>
+    <p>
+        The <strong>NCT University Management System</strong> is a fully integrated desktop application 
+        developed in C# using WPF (Windows Presentation Foundation) with a modern, professional GUI. 
+        The system centralizes all university operations including student management, department 
+        administration, course scheduling, fee tracking, and academic grading.
+    </p>
+    
+    <div class="highlight">
+        <strong>Key Highlights:</strong>
+        <ul>
+            <li>🎓 Complete academic workflow management</li>
+            <li>💰 Automated fee calculation based on department</li>
+            <li>📊 Interactive grade distribution charts</li>
+            <li>🔒 Data validation and integrity checks</li>
+            <li>📈 Performance reports and analytics</li>
+        </ul>
+    </div>
+
+    <!-- Section 2: Features -->
+    <h2>2. Features</h2>
+    
+    <h3>Core Modules</h3>
+    <table>
+        <tr>
+            <th>Module</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><strong>Dashboard</strong></td>
+            <td>Real-time statistics, grade distribution pie chart, quick overview</td>
+        </tr>
+        <tr>
+            <td><strong>Students</strong></td>
+            <td>Full CRUD operations, department assignment, auto-generated IDs</td>
+        </tr>
+        <tr>
+            <td><strong>Departments</strong></td>
+            <td>Manage departments with unique annual fees, course/student counts</td>
+        </tr>
+        <tr>
+            <td><strong>Courses</strong></td>
+            <td>Course management with credits, year levels, department assignment</td>
+        </tr>
+        <tr>
+            <td><strong>Sections</strong></td>
+            <td>Section management with 40-student capacity, scheduling</td>
+        </tr>
+        <tr>
+            <td><strong>Fees</strong></td>
+            <td>Automatic fee calculation, payment tracking, status management</td>
+        </tr>
+        <tr>
+            <td><strong>Grades</strong></td>
+            <td>Score entry, automatic grade calculation, leniency algorithm</td>
+        </tr>
+        <tr>
+            <td><strong>Reports</strong></td>
+            <td>Performance analytics, course statistics, section utilization</td>
+        </tr>
+    </table>
+
+    <h3>Data Validation</h3>
+    <ul>
+        <li>✅ Email format validation</li>
+        <li>✅ Egyptian phone number format</li>
+        <li>✅ Student ID format (NCT + 5 digits)</li>
+        <li>✅ Score range validation (0-100)</li>
+        <li>✅ Duplicate record prevention</li>
+        <li>✅ Required field enforcement</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <!-- Section 3: Technology Stack -->
+    <h2>3. Technology Stack</h2>
+    <table>
+        <tr>
+            <th>Component</th>
+            <th>Technology</th>
+        </tr>
+        <tr>
+            <td>Framework</td>
+            <td>.NET 8.0</td>
+        </tr>
+        <tr>
+            <td>UI Framework</td>
+            <td>WPF (Windows Presentation Foundation)</td>
+        </tr>
+        <tr>
+            <td>Architecture</td>
+            <td>MVVM (Model-View-ViewModel)</td>
+        </tr>
+        <tr>
+            <td>Database</td>
+            <td>SQLite with Entity Framework Core 8.0</td>
+        </tr>
+        <tr>
+            <td>Charts</td>
+            <td>LiveCharts2 (SkiaSharp)</td>
+        </tr>
+        <tr>
+            <td>Toolkit</td>
+            <td>CommunityToolkit.Mvvm</td>
+        </tr>
+    </table>
+
+    <!-- Section 4: System Architecture -->
+    <h2>4. System Architecture</h2>
+    <div class="erd-diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                    PRESENTATION LAYER                        │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                    Views (XAML)                      │    │
+│  │  Dashboard │ Students │ Departments │ Courses │ ... │    │
+│  └─────────────────────────────────────────────────────┘    │
+│                           │                                  │
+│                           ▼                                  │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                  ViewModels (C#)                     │    │
+│  │  Data Binding │ Commands │ Business Logic           │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    BUSINESS LAYER                            │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                   Services                           │    │
+│  │  GradingService │ ReportService │ ValidationService │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      DATA LAYER                              │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │              Entity Framework Core                   │    │
+│  │         UniversityDbContext │ DbSeeder              │    │
+│  └─────────────────────────────────────────────────────┘    │
+│                           │                                  │
+│                           ▼                                  │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                 SQLite Database                      │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+    </div>
+
+    <h3>Project Structure</h3>
+    <div class="code-block">UniversityManagementSystem/
+├── Models/                    # Entity classes
+│   ├── Student.cs
+│   ├── Department.cs
+│   ├── Course.cs
+│   ├── Section.cs
+│   ├── Grade.cs
+│   └── StudentFee.cs
+├── ViewModels/               # MVVM ViewModels
+├── Views/                    # XAML Views
+├── Data/                     # Database layer
+├── Services/                 # Business services
+├── Converters/               # WPF value converters
+├── Resources/                # Styles and themes
+└── DOCUMENTATION/            # Documentation files</div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 5: ERD -->
+    <h2>5. Entity Relationship Diagram (ERD)</h2>
+    
+    <div class="erd-diagram">
+                              ┌─────────────────────┐
+                              │     DEPARTMENT      │
+                              ├─────────────────────┤
+                              │ PK  Id              │
+                              │ UK  Code            │
+                              │     Name            │
+                              │     HeadOfDepartment│
+                              │     Description     │
+                              │     AnnualFees      │
+                              └─────────┬───────────┘
+                                        │
+                       ┌────────────────┼────────────────┐
+                       │ 1              │ 1              │
+                       ▼ N              ▼ N              │
+          ┌────────────────────┐  ┌────────────────────┐ │
+          │      STUDENT       │  │       COURSE       │ │
+          ├────────────────────┤  ├────────────────────┤ │
+          │ PK  Id             │  │ PK  Id             │ │
+          │ UK  StudentId      │  │ UK  Code           │ │
+          │     Name           │  │     Name           │ │
+          │ UK  Email          │  │     Credits        │ │
+          │     Phone          │  │     YearLevel      │ │
+          │     YearLevel      │  │ FK  DepartmentId ──┘ │
+          │ FK  DepartmentId ──┘  │     Description    │
+          │ FK  SectionId ──────┐ └─────────┬──────────┘
+          │     EnrollmentDate  │           │ 1
+          │     IsActive        │           ▼ N
+          └──────────┬──────────┘ ┌────────────────────┐
+                     │            │      SECTION       │
+        ┌────────────┤            ├────────────────────┤
+        │ 1          │            │ PK  Id             │
+        ▼ N          │            │     Name           │
+┌───────────────────┐│            │ FK  CourseId ──────┘
+│   STUDENT_FEE     ││            │     Capacity (40)  │
+├───────────────────┤│            │     Schedule       │
+│ PK  Id            ││            │     Room           │
+│ FK  StudentId ────┘│            └────────────────────┘
+│     AcademicYear   │
+│     Amount         │     1      ┌────────────────────┐
+│     AmountPaid     │◄───────────│       GRADE        │
+│     Status         │            ├────────────────────┤
+│     AssignedDate   │            │ PK  Id             │
+│     LastPaymentDate│            │ FK  StudentId      │
+└───────────────────┘             │ FK  CourseId       │
+                                  │     Assignment1    │
+                                  │     Assignment2    │
+                                  │     FinalExam      │
+                                  │     TotalScore     │
+                                  │     SymbolicGrade  │
+                                  │     LeniencyApplied│
+                                  │     GradedDate     │
+                                  └────────────────────┘
+    </div>
+
+    <h3>Relationships Summary</h3>
+    <table>
+        <tr>
+            <th>Relationship</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Department → Student</td>
+            <td>1:N</td>
+            <td>One department has many students</td>
+        </tr>
+        <tr>
+            <td>Department → Course</td>
+            <td>1:N</td>
+            <td>One department offers many courses</td>
+        </tr>
+        <tr>
+            <td>Course → Section</td>
+            <td>1:N</td>
+            <td>One course has multiple sections</td>
+        </tr>
+        <tr>
+            <td>Section → Student</td>
+            <td>1:N</td>
+            <td>One section contains many students (max 40)</td>
+        </tr>
+        <tr>
+            <td>Student → StudentFee</td>
+            <td>1:N</td>
+            <td>One student has fees for each year</td>
+        </tr>
+        <tr>
+            <td>Student → Grade</td>
+            <td>1:N</td>
+            <td>One student has grades for each course</td>
+        </tr>
+        <tr>
+            <td>Course → Grade</td>
+            <td>1:N</td>
+            <td>One course has grades from many students</td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Section 6: Database Schema -->
+    <h2>6. Database Schema</h2>
+    
+    <h3>Department Table</h3>
+    <div class="code-block">CREATE TABLE Departments (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Code TEXT NOT NULL,
+    Name TEXT NOT NULL,
+    HeadOfDepartment TEXT,
+    Description TEXT,
+    AnnualFees DECIMAL(18,2) DEFAULT 0
+);</div>
+
+    <h3>Student Table</h3>
+    <div class="code-block">CREATE TABLE Students (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    StudentId TEXT,              -- Format: NCT00001
+    Name TEXT NOT NULL,
+    Email TEXT NOT NULL UNIQUE,
+    Phone TEXT,
+    YearLevel INTEGER CHECK(YearLevel BETWEEN 1 AND 4),
+    DepartmentId INTEGER REFERENCES Departments(Id),
+    SectionId INTEGER REFERENCES Sections(Id),
+    EnrollmentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    IsActive BOOLEAN DEFAULT 1
+);</div>
+
+    <h3>Course Table</h3>
+    <div class="code-block">CREATE TABLE Courses (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Code TEXT NOT NULL,          -- Format: CS101
+    Name TEXT NOT NULL,
+    Credits INTEGER CHECK(Credits BETWEEN 1 AND 6),
+    YearLevel INTEGER CHECK(YearLevel BETWEEN 1 AND 4),
+    DepartmentId INTEGER REFERENCES Departments(Id),
+    Description TEXT
+);</div>
+
+    <h3>Section Table</h3>
+    <div class="code-block">CREATE TABLE Sections (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    CourseId INTEGER NOT NULL REFERENCES Courses(Id),
+    Capacity INTEGER DEFAULT 40,
+    Schedule TEXT,
+    Room TEXT
+);</div>
+
+    <h3>StudentFee Table</h3>
+    <div class="code-block">CREATE TABLE StudentFees (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    StudentId INTEGER NOT NULL REFERENCES Students(Id) ON DELETE CASCADE,
+    AcademicYear INTEGER CHECK(AcademicYear BETWEEN 1 AND 4),
+    Amount DECIMAL(18,2) NOT NULL,
+    AmountPaid DECIMAL(18,2) DEFAULT 0,
+    Status TEXT DEFAULT 'Pending',  -- Pending, Partial, Paid, Overdue
+    AssignedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    LastPaymentDate DATETIME
+);</div>
+
+    <h3>Grade Table</h3>
+    <div class="code-block">CREATE TABLE Grades (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    StudentId INTEGER NOT NULL REFERENCES Students(Id) ON DELETE CASCADE,
+    CourseId INTEGER NOT NULL REFERENCES Courses(Id),
+    Assignment1 REAL,            -- 0-100
+    Assignment2 REAL,            -- 0-100
+    FinalExam REAL,              -- 0-100
+    TotalScore REAL,             -- Calculated weighted score
+    SymbolicGrade TEXT,          -- D, M, P, NA
+    LeniencyApplied BOOLEAN DEFAULT 0,
+    GradedDate DATETIME,
+    UNIQUE(StudentId, CourseId)
+);</div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 7: Modules Description -->
+    <h2>7. Modules Description</h2>
+
+    <h3>1. Dashboard Module</h3>
+    <p><strong>Purpose:</strong> Provides an at-a-glance overview of the university system</p>
+    <ul>
+        <li>Total students, courses, sections, departments count</li>
+        <li>Active vs inactive student ratio</li>
+        <li>Interactive pie chart showing grade distribution</li>
+        <li>Quick navigation to other modules</li>
+    </ul>
+
+    <h3>2. Students Module</h3>
+    <p><strong>Purpose:</strong> Complete student lifecycle management</p>
+    <ul>
+        <li>Add, edit, delete students</li>
+        <li>Auto-generated Student IDs (NCT format)</li>
+        <li>Department and section assignment</li>
+        <li>Automatic fee generation on enrollment</li>
+        <li>Search and filter by name, year, department</li>
+    </ul>
+
+    <h3>3. Departments Module</h3>
+    <p><strong>Purpose:</strong> Manage academic departments and their fee structures</p>
+    <ul>
+        <li>Create departments with unique codes</li>
+        <li>Set annual tuition fees per department</li>
+        <li>View student and course counts</li>
+        <li>Automatic fee updates when fees change</li>
+    </ul>
+
+    <h3>4. Fees Module</h3>
+    <p><strong>Purpose:</strong> Financial management and payment tracking</p>
+    <ul>
+        <li>Automatic fee calculation based on department</li>
+        <li>Payment recording (full or partial)</li>
+        <li>Status tracking: <span class="badge badge-warning">Pending</span> <span class="badge badge-info">Partial</span> <span class="badge badge-success">Paid</span> <span class="badge badge-danger">Overdue</span></li>
+        <li>Summary statistics (total, collected, pending)</li>
+    </ul>
+
+    <h3>5. Grades Module</h3>
+    <p><strong>Purpose:</strong> Academic assessment and grade calculation</p>
+    <ul>
+        <li>Enter Assignment 1, Assignment 2, Final Exam scores</li>
+        <li>Automatic grade calculation with weighted formula</li>
+        <li>Leniency algorithm for borderline cases</li>
+        <li>Real-time grade preview</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <!-- Section 8: Grading System -->
+    <h2>8. Grading System</h2>
+
+    <h3>Grade Calculation Formula</h3>
+    <div class="highlight">
+        <strong>Total Score = (Assignment1 × 20%) + (Assignment2 × 20%) + (FinalExam × 60%)</strong>
+    </div>
+
+    <h3>Grade Thresholds</h3>
+    <table>
+        <tr>
+            <th>Grade</th>
+            <th>Symbol</th>
+            <th>Score Range</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><span class="badge badge-success">Distinction</span></td>
+            <td>D</td>
+            <td>85 - 100</td>
+            <td>Excellent performance</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-info">Merit</span></td>
+            <td>M</td>
+            <td>70 - 84.99</td>
+            <td>Very good performance</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-warning">Pass</span></td>
+            <td>P</td>
+            <td>50 - 69.99</td>
+            <td>Satisfactory performance</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-danger">Not Achieved</span></td>
+            <td>NA</td>
+            <td>0 - 49.99</td>
+            <td>Below passing standard</td>
+        </tr>
+    </table>
+
+    <h3>Leniency Algorithm</h3>
+    <p>The system applies a <strong>leniency algorithm</strong> for students who:</p>
+    <ol>
+        <li>Show improvement (Assignment2 > Assignment1)</li>
+        <li>Are within 2 points of the next grade boundary</li>
+    </ol>
+    
+    <div class="highlight">
+        <strong>Example:</strong> A student with 83.5 total score showing improvement would be 
+        upgraded from Merit (M) to Distinction (D).
+    </div>
+
+    <div class="code-block">// Leniency conditions (C# pseudocode)
+bool showsImprovement = Assignment2 > Assignment1;
+bool nearBoundary = score >= (threshold - 2) && score < threshold;
+
+if (showsImprovement && nearBoundary)
+{
+    ApplyLeniency(); // Upgrade to next grade
+}</div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 9: Installation -->
+    <h2>9. Installation & Setup</h2>
+
+    <h3>Prerequisites</h3>
+    <ul>
+        <li>Windows 10/11</li>
+        <li>.NET 8.0 SDK or later</li>
+        <li>Visual Studio 2022 or VS Code with C# extension</li>
+    </ul>
+
+    <h3>Installation Steps</h3>
+    <div class="code-block">1. Navigate to project folder
+   cd "C:\Users\YourUsername\Desktop\ZIAD task\UniversityManagementSystem"
+
+2. Restore NuGet packages
+   dotnet restore
+
+3. Build the project
+   dotnet build
+
+4. Run the application
+   dotnet run</div>
+
+    <h3>First Run</h3>
+    <p>The database (<code>university.db</code>) is automatically created with sample data including:</p>
+    <ul>
+        <li>4 Departments (CS, IT, BUS, ENG)</li>
+        <li>16 Courses (4 per department)</li>
+        <li>32 Sections</li>
+        <li>40 Students</li>
+        <li>Fee records</li>
+        <li>Sample grades</li>
+    </ul>
+
+    <!-- Section 10: Color Palette -->
+    <h2>10. Color Palette & Branding</h2>
+
+    <h3>NCT University Colors</h3>
+    <table>
+        <tr>
+            <th>Color</th>
+            <th>Hex Code</th>
+            <th>Usage</th>
+        </tr>
+        <tr>
+            <td><div class="color-swatch"><div class="color-box" style="background: #112250;"></div> Navy Blue (Primary)</div></td>
+            <td>#112250</td>
+            <td>Headers, sidebar, primary buttons</td>
+        </tr>
+        <tr>
+            <td><div class="color-swatch"><div class="color-box" style="background: #cb810d;"></div> Gold (Accent)</div></td>
+            <td>#cb810d</td>
+            <td>Highlights, hover states, badges</td>
+        </tr>
+        <tr>
+            <td><div class="color-swatch"><div class="color-box" style="background: #75757d;"></div> Gray (Secondary)</div></td>
+            <td>#75757d</td>
+            <td>Secondary text, borders</td>
+        </tr>
+        <tr>
+            <td><div class="color-swatch"><div class="color-box" style="background: #FFFFFF; border: 1px solid #ddd;"></div> White</div></td>
+            <td>#FFFFFF</td>
+            <td>Backgrounds, cards</td>
+        </tr>
+    </table>
+
+    <h3>Status Colors</h3>
+    <table>
+        <tr>
+            <th>Status</th>
+            <th>Color</th>
+            <th>Hex</th>
+        </tr>
+        <tr>
+            <td><span class="badge badge-success">Success/Paid</span></td>
+            <td>Green</td>
+            <td>#10B981</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-warning">Warning/Pending</span></td>
+            <td>Orange</td>
+            <td>#F59E0B</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-danger">Error/Overdue</span></td>
+            <td>Red</td>
+            <td>#EF4444</td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-info">Info/Partial</span></td>
+            <td>Blue</td>
+            <td>#3B82F6</td>
+        </tr>
+    </table>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p><strong>New Cairo Technology University</strong></p>
+        <p>NCT University Management System v1.0.0</p>
+        <p>December 2024</p>
+        <p style="margin-top: 15px;">Excellence in Education</p>
+    </div>
+</body>
+</html>
+

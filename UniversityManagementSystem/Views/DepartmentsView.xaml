@@ -1,0 +1,198 @@
+<UserControl x:Class="UniversityManagementSystem.Views.DepartmentsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="420"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Left Panel - Departments List -->
+        <Grid Grid.Column="0" Margin="0,0,20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Toolbar -->
+            <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Button Content="+ Add Department" Style="{StaticResource BaseButtonStyle}" 
+                                Command="{Binding AddCommand}" Margin="0,0,10,0"/>
+                        <Button Content="Edit" Style="{StaticResource PrimaryButtonStyle}" 
+                                Command="{Binding EditCommand}" Margin="0,0,10,0"/>
+                        <Button Content="Delete" Background="#DC2626" Foreground="White" 
+                                Style="{StaticResource BaseButtonStyle}" 
+                                Command="{Binding DeleteCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Search -->
+            <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBox Grid.Column="0" 
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ModernTextBoxStyle}"
+                             Margin="0,0,10,0"/>
+                    
+                    <Button Grid.Column="1" Content="Clear" Style="{StaticResource IconButtonStyle}"
+                            Command="{Binding ClearSearchCommand}" Padding="12,8"/>
+                </Grid>
+            </Border>
+            
+            <!-- Departments DataGrid -->
+            <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="0">
+                <DataGrid ItemsSource="{Binding Departments}" 
+                          SelectedItem="{Binding SelectedDepartment}"
+                          Style="{StaticResource ModernDataGridStyle}"
+                          ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeaderStyle}"
+                          CellStyle="{StaticResource ModernDataGridCellStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="80"/>
+                        <DataGridTextColumn Header="Department Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Annual Fees" Binding="{Binding AnnualFees, StringFormat=EGP {0:N0}}" Width="120"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+        
+        <!-- Right Panel - Department Form -->
+        <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Form Header -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                    <TextBlock Text="Department Details" Style="{StaticResource SectionTitleStyle}"/>
+                    <TextBlock Text="Manage department information and fees" 
+                               Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,4,0,0"/>
+                </StackPanel>
+                
+                <!-- Form Fields -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- Statistics Cards (when department is selected) -->
+                        <Grid Margin="0,0,0,20" Visibility="{Binding SelectedDepartment, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Border Grid.Column="0" Background="#EEF2FF" CornerRadius="8" Padding="16" Margin="0,0,8,0">
+                                <StackPanel>
+                                    <TextBlock Text="👥 Students" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                                    <TextBlock Text="{Binding TotalStudents}" FontSize="28" FontWeight="Bold" 
+                                               Foreground="{StaticResource PrimaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Border Grid.Column="1" Background="#FEF3C7" CornerRadius="8" Padding="16" Margin="8,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="📚 Courses" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                                    <TextBlock Text="{Binding TotalCourses}" FontSize="28" FontWeight="Bold" 
+                                               Foreground="{StaticResource AccentBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        
+                        <StackPanel IsEnabled="{Binding IsEditing}">
+                            <!-- Department Code -->
+                            <TextBlock Text="Department Code *" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding FormCode, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModernTextBoxStyle}" 
+                                     CharacterCasing="Upper"
+                                     MaxLength="10"
+                                     Margin="0,0,0,4"/>
+                            <TextBlock Text="{Binding CodeError}" Foreground="#DC2626" FontSize="11" Margin="0,0,0,12"
+                                       Visibility="{Binding CodeError, Converter={StaticResource NullToVisibilityConverter}}"/>
+                            
+                            <!-- Department Name -->
+                            <TextBlock Text="Department Name *" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding FormName, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,4"/>
+                            <TextBlock Text="{Binding NameError}" Foreground="#DC2626" FontSize="11" Margin="0,0,0,12"
+                                       Visibility="{Binding NameError, Converter={StaticResource NullToVisibilityConverter}}"/>
+                            
+                            <!-- Annual Fees -->
+                            <TextBlock Text="Annual Fees (EGP) *" Style="{StaticResource LabelStyle}"/>
+                            <Grid Margin="0,0,0,4">
+                                <TextBox Text="{Binding FormAnnualFees, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBoxStyle}"
+                                         Padding="50,12,12,12"/>
+                                <TextBlock Text="EGP" VerticalAlignment="Center" Margin="12,0,0,0"
+                                           Foreground="{StaticResource TextMutedBrush}" FontWeight="SemiBold"/>
+                            </Grid>
+                            <TextBlock Text="{Binding FeesError}" Foreground="#DC2626" FontSize="11" Margin="0,0,0,12"
+                                       Visibility="{Binding FeesError, Converter={StaticResource NullToVisibilityConverter}}"/>
+                            
+                            <!-- Description -->
+                            <TextBlock Text="Description" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding FormDescription, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModernTextBoxStyle}"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     Height="80"
+                                     VerticalContentAlignment="Top"
+                                     Margin="0,0,0,16"/>
+                            
+                            <!-- Info box for fees -->
+                            <Border Background="#DBEAFE" CornerRadius="8" Padding="12" Margin="0,0,0,16">
+                                <StackPanel>
+                                    <TextBlock Text="💡 About Annual Fees" FontWeight="SemiBold" 
+                                               Foreground="#1E40AF" Margin="0,0,0,4"/>
+                                    <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#1E40AF">
+                                        <Run Text="When a student is assigned to this department, fees will be automatically calculated based on this amount for each academic year."/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                        
+                        <!-- Empty state when nothing selected -->
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,40,0,0"
+                                    Visibility="{Binding SelectedDepartment, Converter={StaticResource NullToVisibilityInverseConverter}}">
+                            <TextBlock Text="🏛️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                            <TextBlock Text="Select a Department" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Choose from the list or add a new one" FontSize="13"
+                                       Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+                
+                <!-- Form Actions -->
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                    <Button Content="Cancel" Style="{StaticResource IconButtonStyle}" 
+                            Command="{Binding CancelCommand}" 
+                            Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Padding="16,10" Margin="0,0,10,0"/>
+                    <Button Content="Save Department" Style="{StaticResource BaseButtonStyle}" 
+                            Command="{Binding SaveCommand}"
+                            Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
+
