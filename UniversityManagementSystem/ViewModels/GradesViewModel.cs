@@ -306,9 +306,20 @@ public class GradesViewModel : BaseViewModel
     
     private void ValidateFinalExam()
     {
-        if (string.IsNullOrWhiteSpace(FormFinalExam))
+        // Get course to check if Final Exam is required
+        var course = Courses.FirstOrDefault(c => c.Id == FormCourseId);
+        
+        // For Theoretical courses, Final Exam is not required (should be empty)
+        if (course?.CourseType == CourseType.Theoretical100)
         {
             FinalExamError = string.Empty;
+            return;
+        }
+        
+        // For Practical courses, Final Exam is required
+        if (string.IsNullOrWhiteSpace(FormFinalExam))
+        {
+            FinalExamError = "Final Exam is required for practical courses.";
             return;
         }
         
@@ -584,19 +595,46 @@ public class GradesViewModel : BaseViewModel
         
         if (result == MessageBoxResult.Yes)
         {
-            using var context = new UniversityDbContext();
-            var allGrades = context.Grades.ToList();
-            
-            foreach (var grade in allGrades)
+            try
             {
-                _gradingService.CalculateGrade(grade);
+                IsLoading = true;
+                ErrorMessage = string.Empty;
+                
+                using var context = new UniversityDbContext();
+                // IMPORTANT: Include Course and Student to ensure CalculateGrade works properly
+                var allGrades = context.Grades
+                    .Include(g => g.Course)
+                    .Include(g => g.Student)
+                    .ToList();
+                
+                int recalculatedCount = 0;
+                foreach (var grade in allGrades)
+                {
+                    // Only recalculate if grade has required data
+                    if (grade.Course != null)
+                    {
+                        _gradingService.CalculateGrade(grade);
+                        recalculatedCount++;
+                    }
+                }
+                
+                context.SaveChanges();
+                LoadGrades(); // Reload to refresh the UI
+                
+                SuccessMessage = $"Successfully recalculated {recalculatedCount} grades.";
+                MessageBox.Show($"Successfully recalculated {recalculatedCount} grades.", 
+                    "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            
-            context.SaveChanges();
-            LoadGrades();
-            
-            MessageBox.Show($"Successfully recalculated {allGrades.Count} grades.", 
-                "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Failed to recalculate grades: {ex.Message}";
+                MessageBox.Show($"Failed to recalculate grades: {ex.Message}", 
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
     }
 }

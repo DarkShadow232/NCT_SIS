@@ -55,3 +55,4 @@ public class LectureHall
     public string CapacityDisplay => $"{Capacity} students";
 }
 
+

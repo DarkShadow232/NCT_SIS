@@ -41,6 +41,7 @@ public class MainViewModel : BaseViewModel
     public ICommand NavigateToSectionsCommand { get; }
     public ICommand NavigateToFeesCommand { get; }
     public ICommand NavigateToGradesCommand { get; }
+    public ICommand NavigateToInstructorsCommand { get; }
     public ICommand NavigateToReportsCommand { get; }
     public ICommand NavigateToUsersCommand { get; }
     public ICommand NavigateToAnnouncementsCommand { get; }
@@ -70,6 +71,7 @@ public class MainViewModel : BaseViewModel
         NavigateToSectionsCommand = new RelayCommand(() => NavigateTo("Sections"));
         NavigateToFeesCommand = new RelayCommand(() => NavigateTo("Fees"));
         NavigateToGradesCommand = new RelayCommand(() => NavigateTo("Grades"));
+        NavigateToInstructorsCommand = new RelayCommand(() => NavigateTo("Instructors"));
         NavigateToReportsCommand = new RelayCommand(() => NavigateTo("Reports"));
         NavigateToUsersCommand = new RelayCommand(() => NavigateTo("Users"));
         NavigateToAnnouncementsCommand = new RelayCommand(() => NavigateTo("Announcements"));
@@ -125,6 +127,7 @@ public class MainViewModel : BaseViewModel
             "Sections" => new SectionsViewModel(),
             "Fees" => new FeesViewModel(),
             "Grades" => new GradesViewModel(),
+            "Instructors" => new InstructorsViewModel(new UniversityDbContext()),
             "Reports" => new ReportsViewModel(),
             "Users" => new UsersViewModel(),
             "Announcements" => new AnnouncementsViewModel(),

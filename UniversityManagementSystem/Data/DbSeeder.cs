@@ -134,34 +134,47 @@ public static class DbSeeder
         context.StudentFees.AddRange(studentFees);
         context.SaveChanges();
         
-        // Seed Grades - only for 20 students
+        // Seed Grades - with CourseWork field and proper calculations for all students
+        var gradingService = new GradingService();
         var grades = new List<Grade>();
-        foreach (var student in students.Take(20))
+        
+        foreach (var student in students)
         {
             var studentCourse = courses.FirstOrDefault(c => c.YearLevel == student.YearLevel && c.DepartmentId == student.DepartmentId);
             if (studentCourse != null)
             {
-                grades.Add(new Grade
+                var grade = new Grade
                 {
                     StudentId = student.Id,
                     CourseId = studentCourse.Id,
-                    Assignment1 = random.Next(50, 100),
-                    Assignment2 = random.Next(50, 100),
-                    FinalExam = random.Next(50, 100),
-                    GradedDate = DateTime.Now.AddDays(-random.Next(1, 15))
-                });
+                    Assignment1 = random.Next(60, 100),
+                    Assignment2 = random.Next(60, 100),
+                    CourseWork = random.Next(65, 100),  // NEW: Course Work field
+                    FinalExam = studentCourse.CourseType == CourseType.Theoretical100 ? null : random.Next(55, 100),
+                    GradedDate = DateTime.Now.AddDays(-random.Next(1, 15)),
+                    Course = studentCourse  // Set course for calculation
+                };
+                
+                // Calculate total score and symbolic grade
+                gradingService.CalculateGrade(grade);
+                
+                grades.Add(grade);
             }
         }
         context.Grades.AddRange(grades);
         context.SaveChanges();
         
-        // Seed Instructors
+        // Seed Instructors (Doctors) - with full details
         var instructors = new List<Instructor>
         {
-            new() { Name = "Dr. Ahmed Hassan", Email = "ahmed.hassan@nct.edu.eg", DepartmentId = departments[0].Id },
-            new() { Name = "Dr. Sara Mohamed", Email = "sara.mohamed@nct.edu.eg", DepartmentId = departments[1].Id },
-            new() { Name = "Dr. Omar Khaled", Email = "omar.khaled@nct.edu.eg", DepartmentId = departments[2].Id },
-            new() { Name = "Dr. Fatma Ali", Email = "fatma.ali@nct.edu.eg", DepartmentId = departments[3].Id }
+            new() { Name = "Dr. Ahmed Hassan", Email = "ahmed.hassan@nct.edu.eg", PhoneNumber = "01001234567", DepartmentId = departments[0].Id },
+            new() { Name = "Dr. Sara Mohamed", Email = "sara.mohamed@nct.edu.eg", PhoneNumber = "01012345678", DepartmentId = departments[1].Id },
+            new() { Name = "Dr. Omar Khaled", Email = "omar.khaled@nct.edu.eg", PhoneNumber = "01023456789", DepartmentId = departments[2].Id },
+            new() { Name = "Dr. Fatma Ali", Email = "fatma.ali@nct.edu.eg", PhoneNumber = "01034567890", DepartmentId = departments[3].Id },
+            new() { Name = "Dr. Mohamed Ibrahim", Email = "mohamed.ibrahim@nct.edu.eg", PhoneNumber = "01045678901", DepartmentId = departments[0].Id },
+            new() { Name = "Dr. Nour Hassan", Email = "nour.hassan@nct.edu.eg", PhoneNumber = "01056789012", DepartmentId = departments[1].Id },
+            new() { Name = "Dr. Ali Mahmoud", Email = "ali.mahmoud@nct.edu.eg", PhoneNumber = "01067890123", DepartmentId = departments[2].Id },
+            new() { Name = "Dr. Hana Salem", Email = "hana.salem@nct.edu.eg", PhoneNumber = "01078901234", DepartmentId = departments[3].Id }
         };
         context.Instructors.AddRange(instructors);
         context.SaveChanges();

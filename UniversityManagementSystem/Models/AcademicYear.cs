@@ -52,3 +52,4 @@ public class AcademicCalendar
     public virtual AcademicYear? AcademicYear { get; set; }
 }
 
+

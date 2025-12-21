@@ -35,7 +35,13 @@
                                 Command="{Binding EditCommand}" Margin="0,0,10,0"/>
                         <Button Content="Delete" Background="#DC2626" Foreground="White" 
                                 Style="{StaticResource BaseButtonStyle}" 
-                                Command="{Binding DeleteCommand}"/>
+                                Command="{Binding DeleteCommand}" Margin="0,0,10,0"/>
+                        <Button Content="📄 Download Report" Background="#10B981" Foreground="White" 
+                                Style="{StaticResource BaseButtonStyle}" 
+                                Command="{Binding DownloadReportCommand}" Margin="0,0,10,0"/>
+                        <Button Content="📦 Download All Reports" Background="#8B5CF6" Foreground="White" 
+                                Style="{StaticResource BaseButtonStyle}" 
+                                Command="{Binding DownloadAllReportsCommand}"/>
                     </StackPanel>
                 </Grid>
             </Border>

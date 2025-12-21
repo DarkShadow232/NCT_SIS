@@ -225,6 +225,8 @@ public class StudentsViewModel : BaseViewModel
     public ICommand CancelCommand { get; }
     public ICommand DeleteCommand { get; }
     public ICommand ClearFilterCommand { get; }
+    public ICommand DownloadReportCommand { get; }
+    public ICommand DownloadAllReportsCommand { get; }
     
     public StudentsViewModel()
     {
@@ -234,6 +236,8 @@ public class StudentsViewModel : BaseViewModel
         CancelCommand = new RelayCommand(Cancel);
         DeleteCommand = new RelayCommand(Delete, () => SelectedStudent != null);
         ClearFilterCommand = new RelayCommand(ClearFilter);
+        DownloadReportCommand = new RelayCommand(DownloadReport, () => SelectedStudent != null);
+        DownloadAllReportsCommand = new RelayCommand(DownloadAllReports);
         
         LoadDepartments();
         LoadStudents();
@@ -494,6 +498,89 @@ public class StudentsViewModel : BaseViewModel
             .DefaultIfEmpty(2024000)
             .Max();
         return $"NCT{maxId + 1:D5}";
+    }
+    
+    private void DownloadReport()
+    {
+        if (SelectedStudent == null) return;
+        
+        try
+        {
+            using var context = new UniversityDbContext();
+            var student = context.Students
+                .Include(s => s.Department)
+                .Include(s => s.Section)
+                .Include(s => s.Grades)
+                    .ThenInclude(g => g.Course)
+                .FirstOrDefault(s => s.Id == SelectedStudent.Id);
+            
+            if (student == null)
+            {
+                MessageBox.Show("Student not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            
+            var exportService = new FileExportService();
+            var fileName = exportService.ExportStudent(student);
+            
+            MessageBox.Show($"Student report downloaded successfully!\n\nFile saved to:\n{fileName}", 
+                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to download report: {ex.Message}", 
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+    
+    private void DownloadAllReports()
+    {
+        try
+        {
+            using var context = new UniversityDbContext();
+            var students = context.Students
+                .Include(s => s.Department)
+                .Include(s => s.Section)
+                .Include(s => s.Grades)
+                    .ThenInclude(g => g.Course)
+                .OrderBy(s => s.StudentId)
+                .ToList();
+            
+            if (!students.Any())
+            {
+                MessageBox.Show("No students found.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            
+            var exportService = new FileExportService();
+            var exportPath = exportService.GetExportPath();
+            int successCount = 0;
+            int failCount = 0;
+            
+            foreach (var student in students)
+            {
+                try
+                {
+                    exportService.ExportStudent(student);
+                    successCount++;
+                }
+                catch
+                {
+                    failCount++;
+                }
+            }
+            
+            MessageBox.Show($"Bulk export completed!\n\n" +
+                          $"✅ Success: {successCount} reports\n" +
+                          $"❌ Failed: {failCount} reports\n\n" +
+                          $"Files saved to:\n{exportPath}", 
+                "Bulk Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to download reports: {ex.Message}", 
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
     
     private void Cancel()

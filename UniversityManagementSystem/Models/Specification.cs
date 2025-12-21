@@ -36,3 +36,4 @@ public class Specification
     public bool IsActive { get; set; } = true;
 }
 
+

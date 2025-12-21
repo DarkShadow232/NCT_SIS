@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Users\Omar Mohamed\Desktop\ZIAD task\NCT_SIS\UniversityManagementSystem\App.xaml
-22756897837
+231739646741
 
-72507886752
+74-1942466686
 226573896259
-MainWindow.xaml;Resources\Colors.xaml;Resources\Styles.xaml;Views\AnnouncementsView.xaml;Views\CoursesView.xaml;Views\DashboardView.xaml;Views\DepartmentsView.xaml;Views\FeesView.xaml;Views\GradesView.xaml;Views\InstructorPortal\GradeEntryView.xaml;Views\InstructorPortal\InstructorDashboardView.xaml;Views\InstructorPortal\MyCoursesView.xaml;Views\LoginWindow.xaml;Views\ReportsView.xaml;Views\SectionsView.xaml;Views\StudentPortal\MyFeesView.xaml;Views\StudentPortal\MyGradesView.xaml;Views\StudentPortal\MyScheduleView.xaml;Views\StudentPortal\StudentAnnouncementsView.xaml;Views\StudentPortal\StudentDashboardView.xaml;Views\StudentsView.xaml;Views\UsersView.xaml;
+MainWindow.xaml;Resources\Colors.xaml;Resources\Styles.xaml;Views\AnnouncementsView.xaml;Views\CoursesView.xaml;Views\DashboardView.xaml;Views\DepartmentsView.xaml;Views\FeesView.xaml;Views\GradesView.xaml;Views\InstructorPortal\GradeEntryView.xaml;Views\InstructorPortal\InstructorDashboardView.xaml;Views\InstructorPortal\MyCoursesView.xaml;Views\InstructorsView.xaml;Views\LoginWindow.xaml;Views\ReportsView.xaml;Views\SectionsView.xaml;Views\StudentPortal\MyFeesView.xaml;Views\StudentPortal\MyGradesView.xaml;Views\StudentPortal\MyScheduleView.xaml;Views\StudentPortal\StudentAnnouncementsView.xaml;Views\StudentPortal\StudentDashboardView.xaml;Views\StudentsView.xaml;Views\UsersView.xaml;
 
 False
 

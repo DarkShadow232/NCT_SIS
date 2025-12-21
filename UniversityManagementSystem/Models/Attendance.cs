@@ -36,3 +36,4 @@ public class Attendance
     public string StatusDisplay => IsPresent ? "Present" : "Absent";
 }
 
+

@@ -59,3 +59,4 @@ public class Laboratory
     public string CapacityDisplay => $"{Capacity} students, {NumberOfComputers} computers";
 }
 
+

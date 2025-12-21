@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,25 @@ public partial class App : Application
         {
             // Initialize database
             using var context = new UniversityDbContext();
+            
+            // Check if database needs to be recreated for new schema
+            var dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "university.db");
+            
+            // Delete old database if it exists to recreate with new schema
+            // This ensures all new tables (Attendance, LectureHall, etc.) are created
+            if (File.Exists(dbPath))
+            {
+                try
+                {
+                    context.Database.EnsureDeleted();
+                }
+                catch
+                {
+                    // If can't delete, try to continue
+                }
+            }
+            
+            // Create database with all new tables
             context.Database.EnsureCreated();
             DbSeeder.SeedData(context);
         }

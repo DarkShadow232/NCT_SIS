@@ -391,3 +391,4 @@ public class AcademicCalendarViewModel : BaseViewModel
     }
 }
 
+

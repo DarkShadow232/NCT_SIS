@@ -809,3 +809,4 @@ The application provides a complete, professional-grade solution that addresses 
 **Total Lines of Code**: 10,000+  
 **Technology Stack**: C# .NET 8.0, WPF, Entity Framework Core, SQLite
 
+

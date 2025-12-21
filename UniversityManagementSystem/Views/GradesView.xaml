@@ -88,7 +88,8 @@
                         <DataGridTextColumn Header="Course" Binding="{Binding Course.Code}" Width="80"/>
                         <DataGridTextColumn Header="A1" Binding="{Binding Assignment1, StringFormat={}{0:F0}}" Width="50"/>
                         <DataGridTextColumn Header="A2" Binding="{Binding Assignment2, StringFormat={}{0:F0}}" Width="50"/>
-                        <DataGridTextColumn Header="Final" Binding="{Binding FinalExam, StringFormat={}{0:F0}}" Width="50"/>
+                        <DataGridTextColumn Header="CW" Binding="{Binding CourseWork, StringFormat={}{0:F0}}" Width="50"/>
+                        <DataGridTextColumn Header="Fin" Binding="{Binding FinalExam, StringFormat={}{0:F0}}" Width="50"/>
                         <DataGridTextColumn Header="Total" Binding="{Binding TotalScore, StringFormat={}{0:F1}}" Width="60"/>
                         <DataGridTemplateColumn Header="Grade" Width="70">
                             <DataGridTemplateColumn.CellTemplate>
@@ -150,11 +151,13 @@
                             <!-- Grading Info Card -->
                             <Border Background="#EEF2FF" CornerRadius="8" Padding="16" Margin="0,0,0,20">
                                 <StackPanel>
-                                    <TextBlock Text="📊 Grading Formula" FontWeight="SemiBold" 
+                                    <TextBlock Text="📊 Grading Formula (PDF Requirements)" FontWeight="SemiBold" 
                                                Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,8"/>
-                                    <TextBlock Text="A1 (20%) + A2 (20%) + Final (60%)" 
+                                    <TextBlock Text="Practical: A1 (20%) + A2 (30%) + CW (20%) + Final (30%)" 
                                                Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
-                                    <TextBlock Text="D: 85+ | M: 70-84 | P: 50-69 | NA: &lt;50" 
+                                    <TextBlock Text="Theoretical: A1 (20%) + A2 (20%) + CW (60%)" 
+                                               Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,2,0,0"/>
+                                    <TextBlock Text="Excellent: ≥85% | Very Good: ≥75% | Good: ≥65% | Pass: ≥60%" 
                                                Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,4,0,0"/>
                                 </StackPanel>
                             </Border>
@@ -173,10 +176,18 @@
                             <TextBlock Text="{Binding Assignment2Error}" Foreground="#DC2626" FontSize="11" Margin="0,0,0,12"
                                        Visibility="{Binding Assignment2Error, Converter={StaticResource NullToVisibilityConverter}}"/>
                             
-                            <!-- Final Exam -->
-                            <TextBlock Text="Final Exam (0-100)" Style="{StaticResource LabelStyle}"/>
-                            <TextBox Text="{Binding FormFinalExam, UpdateSourceTrigger=PropertyChanged}" 
+                            <!-- Course Work (NEW) -->
+                            <TextBlock Text="Course Work - CW (0-100)" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding FormCourseWork, UpdateSourceTrigger=PropertyChanged}" 
                                      Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,4"/>
+                            <TextBlock Text="{Binding CourseWorkError}" Foreground="#DC2626" FontSize="11" Margin="0,0,0,12"
+                                       Visibility="{Binding CourseWorkError, Converter={StaticResource NullToVisibilityConverter}}"/>
+                            
+                            <!-- Final Exam -->
+                            <TextBlock Text="Final Exam (0-100) - Required for Practical courses" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding FormFinalExam, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,4"
+                                     ToolTip="Required for Practical courses. Leave empty for Theoretical courses."/>
                             <TextBlock Text="{Binding FinalExamError}" Foreground="#DC2626" FontSize="11" Margin="0,0,0,20"
                                        Visibility="{Binding FinalExamError, Converter={StaticResource NullToVisibilityConverter}}"/>
                             

@@ -41,6 +41,9 @@
         <DataTemplate DataType="{x:Type vm:GradesViewModel}">
             <views:GradesView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:InstructorsViewModel}">
+            <views:InstructorsView/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vm:ReportsViewModel}">
             <views:ReportsView/>
         </DataTemplate>
@@ -196,6 +199,14 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="📝" FontSize="18" Margin="0,0,14,0"/>
                                     <TextBlock Text="Grades" VerticalAlignment="Center" FontSize="14"/>
+                                </StackPanel>
+                            </RadioButton>
+                            
+                            <RadioButton Style="{StaticResource NavButtonStyle}" 
+                                         Command="{Binding NavigateToInstructorsCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="👨‍🏫" FontSize="18" Margin="0,0,14,0"/>
+                                    <TextBlock Text="Instructors/Doctors" VerticalAlignment="Center" FontSize="14"/>
                                 </StackPanel>
                             </RadioButton>
                             

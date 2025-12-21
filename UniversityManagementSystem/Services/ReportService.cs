@@ -31,6 +31,7 @@ public class ReportService
     
     /// <summary>
     /// Gets grade distribution statistics
+    /// Maps new PDF grade names (Excellent, Very Good, Good, Pass, Fail) to display categories
     /// </summary>
     public GradeDistribution GetGradeDistribution()
     {
@@ -38,10 +39,16 @@ public class ReportService
         
         return new GradeDistribution
         {
-            DistinctionCount = grades.Count(g => g.SymbolicGrade == "D"),
-            MeritCount = grades.Count(g => g.SymbolicGrade == "M"),
-            PassCount = grades.Count(g => g.SymbolicGrade == "P"),
-            FailCount = grades.Count(g => g.SymbolicGrade == "NA"),
+            // Map new PDF grades to display categories:
+            // Excellent (≥85%) = Distinction
+            // Very Good (≥75%) = Merit
+            // Good (≥65%) = Pass
+            // Pass (≥60%) = Pass
+            // Fail (<60%) = Not Achieved
+            DistinctionCount = grades.Count(g => g.SymbolicGrade == "Excellent" || g.SymbolicGrade == "D"),
+            MeritCount = grades.Count(g => g.SymbolicGrade == "Very Good" || g.SymbolicGrade == "M"),
+            PassCount = grades.Count(g => g.SymbolicGrade == "Good" || g.SymbolicGrade == "Pass" || g.SymbolicGrade == "P"),
+            FailCount = grades.Count(g => g.SymbolicGrade == "Fail" || g.SymbolicGrade == "NA"),
             TotalGraded = grades.Count
         };
     }
@@ -72,7 +79,7 @@ public class ReportService
                 CourseCode = g.Key.Code,
                 AverageScore = g.Average(x => x.TotalScore!.Value),
                 StudentCount = g.Count(),
-                PassRate = (double)g.Count(x => x.SymbolicGrade != "NA") / g.Count() * 100
+                PassRate = (double)g.Count(x => x.SymbolicGrade != "NA" && x.SymbolicGrade != "Fail") / g.Count() * 100
             })
             .OrderByDescending(c => c.AverageScore)
             .ToList();

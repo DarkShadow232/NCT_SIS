@@ -369,3 +369,5 @@ C:\Users\Omar Mohamed\Desktop\ZIAD task\NCT_SIS\UniversityManagementSystem\obj\D
 C:\Users\Omar Mohamed\Desktop\ZIAD task\NCT_SIS\UniversityManagementSystem\obj\Debug\net8.0-windows\UniversityManagementSystem.pdb
 C:\Users\Omar Mohamed\Desktop\ZIAD task\NCT_SIS\UniversityManagementSystem\obj\Debug\net8.0-windows\UniversityManagementSystem.genruntimeconfig.cache
 C:\Users\Omar Mohamed\Desktop\ZIAD task\NCT_SIS\UniversityManagementSystem\obj\Debug\net8.0-windows\ref\UniversityManagementSystem.dll
+C:\Users\Omar Mohamed\Desktop\ZIAD task\NCT_SIS\UniversityManagementSystem\obj\Debug\net8.0-windows\Views\InstructorsView.baml
+C:\Users\Omar Mohamed\Desktop\ZIAD task\NCT_SIS\UniversityManagementSystem\obj\Debug\net8.0-windows\Views\InstructorsView.g.cs
