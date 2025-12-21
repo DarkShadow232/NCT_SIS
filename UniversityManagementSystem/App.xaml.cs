@@ -41,6 +41,31 @@ public partial class App : Application
             // Create database with all new tables
             context.Database.EnsureCreated();
             DbSeeder.SeedData(context);
+            
+            // Test database connectivity and integrity
+            var testResult = DatabaseTester.TestDatabase();
+            
+            // Log test results (can be viewed in debug output)
+            System.Diagnostics.Debug.WriteLine(testResult);
+            
+            // Show brief status in message box (optional - comment out if not needed)
+            var canConnect = context.Database.CanConnect();
+            var deptCount = context.Departments.Count();
+            var studentCount = context.Students.Count();
+            var gradeCount = context.Grades.Count();
+            
+            if (canConnect && deptCount > 0 && studentCount > 0)
+            {
+                // Database is working correctly - no need to show message
+                // Uncomment the line below if you want to see status on startup
+                // MessageBox.Show($"✓ Database initialized successfully!\n\nDepartments: {deptCount}\nStudents: {studentCount}\nGrades: {gradeCount}", 
+                //     "Database Status", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show($"⚠ Database warning:\n\nConnection: {(canConnect ? "OK" : "FAILED")}\nDepartments: {deptCount}\nStudents: {studentCount}\nGrades: {gradeCount}\n\nFull test results logged to debug output.", 
+                    "Database Status", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
         catch (Exception ex)
         {

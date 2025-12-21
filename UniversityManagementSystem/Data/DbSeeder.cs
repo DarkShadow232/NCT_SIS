@@ -26,29 +26,29 @@ public static class DbSeeder
         // Seed Courses - fewer courses for faster loading
         var courses = new List<Course>
         {
-            // Computer Science
-            new() { Name = "Introduction to Programming", Code = "CS101", Credits = 4, YearLevel = 1, DepartmentId = departments[0].Id },
-            new() { Name = "Data Structures", Code = "CS201", Credits = 4, YearLevel = 2, DepartmentId = departments[0].Id },
-            new() { Name = "Software Engineering", Code = "CS301", Credits = 4, YearLevel = 3, DepartmentId = departments[0].Id },
-            new() { Name = "Machine Learning", Code = "CS401", Credits = 4, YearLevel = 4, DepartmentId = departments[0].Id },
+            // Computer Science - Mix of Practical and Theoretical
+            new() { Name = "Introduction to Programming", Code = "CS101", Credits = 4, YearLevel = 1, DepartmentId = departments[0].Id, CourseType = CourseType.Practical150, CurriculumStructure = CurriculumStructure.Practical },
+            new() { Name = "Data Structures", Code = "CS201", Credits = 4, YearLevel = 2, DepartmentId = departments[0].Id, CourseType = CourseType.Practical100, CurriculumStructure = CurriculumStructure.Practical },
+            new() { Name = "Software Engineering", Code = "CS301", Credits = 4, YearLevel = 3, DepartmentId = departments[0].Id, CourseType = CourseType.Practical100, CurriculumStructure = CurriculumStructure.Practical },
+            new() { Name = "Machine Learning", Code = "CS401", Credits = 4, YearLevel = 4, DepartmentId = departments[0].Id, CourseType = CourseType.Theoretical100, CurriculumStructure = CurriculumStructure.Theoretical },
             
-            // Information Technology
-            new() { Name = "IT Fundamentals", Code = "IT101", Credits = 3, YearLevel = 1, DepartmentId = departments[1].Id },
-            new() { Name = "Web Development", Code = "IT201", Credits = 4, YearLevel = 2, DepartmentId = departments[1].Id },
-            new() { Name = "Network Administration", Code = "IT301", Credits = 4, YearLevel = 3, DepartmentId = departments[1].Id },
-            new() { Name = "Cybersecurity", Code = "IT401", Credits = 4, YearLevel = 4, DepartmentId = departments[1].Id },
+            // Information Technology - Mix of Practical and Theoretical
+            new() { Name = "IT Fundamentals", Code = "IT101", Credits = 3, YearLevel = 1, DepartmentId = departments[1].Id, CourseType = CourseType.Theoretical100, CurriculumStructure = CurriculumStructure.Theoretical },
+            new() { Name = "Web Development", Code = "IT201", Credits = 4, YearLevel = 2, DepartmentId = departments[1].Id, CourseType = CourseType.Practical100, CurriculumStructure = CurriculumStructure.Practical },
+            new() { Name = "Network Administration", Code = "IT301", Credits = 4, YearLevel = 3, DepartmentId = departments[1].Id, CourseType = CourseType.Practical100, CurriculumStructure = CurriculumStructure.Practical },
+            new() { Name = "Cybersecurity", Code = "IT401", Credits = 4, YearLevel = 4, DepartmentId = departments[1].Id, CourseType = CourseType.Theoretical100, CurriculumStructure = CurriculumStructure.Theoretical },
             
-            // Business Administration
-            new() { Name = "Introduction to Business", Code = "BUS101", Credits = 3, YearLevel = 1, DepartmentId = departments[2].Id },
-            new() { Name = "Marketing Fundamentals", Code = "BUS201", Credits = 3, YearLevel = 2, DepartmentId = departments[2].Id },
-            new() { Name = "Financial Management", Code = "BUS301", Credits = 4, YearLevel = 3, DepartmentId = departments[2].Id },
-            new() { Name = "Strategic Management", Code = "BUS401", Credits = 4, YearLevel = 4, DepartmentId = departments[2].Id },
+            // Business Administration - Mostly Theoretical
+            new() { Name = "Introduction to Business", Code = "BUS101", Credits = 3, YearLevel = 1, DepartmentId = departments[2].Id, CourseType = CourseType.Theoretical100, CurriculumStructure = CurriculumStructure.Theoretical },
+            new() { Name = "Marketing Fundamentals", Code = "BUS201", Credits = 3, YearLevel = 2, DepartmentId = departments[2].Id, CourseType = CourseType.Theoretical100, CurriculumStructure = CurriculumStructure.Theoretical },
+            new() { Name = "Financial Management", Code = "BUS301", Credits = 4, YearLevel = 3, DepartmentId = departments[2].Id, CourseType = CourseType.Theoretical100, CurriculumStructure = CurriculumStructure.Theoretical },
+            new() { Name = "Strategic Management", Code = "BUS401", Credits = 4, YearLevel = 4, DepartmentId = departments[2].Id, CourseType = CourseType.Theoretical100, CurriculumStructure = CurriculumStructure.Theoretical },
             
-            // Engineering
-            new() { Name = "Engineering Mathematics", Code = "ENG101", Credits = 4, YearLevel = 1, DepartmentId = departments[3].Id },
-            new() { Name = "Circuit Analysis", Code = "ENG201", Credits = 4, YearLevel = 2, DepartmentId = departments[3].Id },
-            new() { Name = "Digital Electronics", Code = "ENG301", Credits = 4, YearLevel = 3, DepartmentId = departments[3].Id },
-            new() { Name = "Control Systems", Code = "ENG401", Credits = 4, YearLevel = 4, DepartmentId = departments[3].Id }
+            // Engineering - Mix of Practical and Theoretical
+            new() { Name = "Engineering Mathematics", Code = "ENG101", Credits = 4, YearLevel = 1, DepartmentId = departments[3].Id, CourseType = CourseType.Theoretical100, CurriculumStructure = CurriculumStructure.Theoretical },
+            new() { Name = "Circuit Analysis", Code = "ENG201", Credits = 4, YearLevel = 2, DepartmentId = departments[3].Id, CourseType = CourseType.Practical100, CurriculumStructure = CurriculumStructure.Practical },
+            new() { Name = "Digital Electronics", Code = "ENG301", Credits = 4, YearLevel = 3, DepartmentId = departments[3].Id, CourseType = CourseType.Practical150, CurriculumStructure = CurriculumStructure.Practical },
+            new() { Name = "Control Systems", Code = "ENG401", Credits = 4, YearLevel = 4, DepartmentId = departments[3].Id, CourseType = CourseType.Practical100, CurriculumStructure = CurriculumStructure.Practical }
         };
         context.Courses.AddRange(courses);
         context.SaveChanges();
