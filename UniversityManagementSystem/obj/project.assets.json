@@ -3346,11 +3346,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Omar Mohamed\\Desktop\\ZIAD task\\UniversityManagementSystem\\UniversityManagementSystem.csproj",
+      "projectUniqueName": "C:\\Users\\Omar Mohamed\\Desktop\\ZIAD task\\NCT_SIS\\UniversityManagementSystem\\UniversityManagementSystem.csproj",
       "projectName": "UniversityManagementSystem",
-      "projectPath": "C:\\Users\\Omar Mohamed\\Desktop\\ZIAD task\\UniversityManagementSystem\\UniversityManagementSystem.csproj",
+      "projectPath": "C:\\Users\\Omar Mohamed\\Desktop\\ZIAD task\\NCT_SIS\\UniversityManagementSystem\\UniversityManagementSystem.csproj",
       "packagesPath": "C:\\Users\\Omar Mohamed\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Omar Mohamed\\Desktop\\ZIAD task\\UniversityManagementSystem\\obj\\",
+      "outputPath": "C:\\Users\\Omar Mohamed\\Desktop\\ZIAD task\\NCT_SIS\\UniversityManagementSystem\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Omar Mohamed\\AppData\\Roaming\\NuGet\\NuGet.Config"

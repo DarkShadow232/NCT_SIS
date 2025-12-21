@@ -26,6 +26,7 @@ public class GradesViewModel : BaseViewModel
     private int _formCourseId;
     private string _formAssignment1 = string.Empty;
     private string _formAssignment2 = string.Empty;
+    private string _formCourseWork = string.Empty;  // New field for CW
     private string _formFinalExam = string.Empty;
     private double? _formTotalScore;
     private string? _formSymbolicGrade;
@@ -34,6 +35,7 @@ public class GradesViewModel : BaseViewModel
     // Validation errors
     private string _assignment1Error = string.Empty;
     private string _assignment2Error = string.Empty;
+    private string _courseWorkError = string.Empty;  // New validation error
     private string _finalExamError = string.Empty;
     
     public ObservableCollection<Grade> Grades
@@ -138,6 +140,19 @@ public class GradesViewModel : BaseViewModel
         }
     }
     
+    public string FormCourseWork
+    {
+        get => _formCourseWork;
+        set
+        {
+            if (SetProperty(ref _formCourseWork, value))
+            {
+                ValidateCourseWork();
+                CalculatePreview();
+            }
+        }
+    }
+    
     public string FormFinalExam
     {
         get => _formFinalExam;
@@ -182,6 +197,12 @@ public class GradesViewModel : BaseViewModel
         set => SetProperty(ref _assignment2Error, value);
     }
     
+    public string CourseWorkError
+    {
+        get => _courseWorkError;
+        set => SetProperty(ref _courseWorkError, value);
+    }
+    
     public string FinalExamError
     {
         get => _finalExamError;
@@ -190,6 +211,7 @@ public class GradesViewModel : BaseViewModel
     
     public bool HasErrors => !string.IsNullOrEmpty(Assignment1Error) || 
                              !string.IsNullOrEmpty(Assignment2Error) || 
+                             !string.IsNullOrEmpty(CourseWorkError) ||
                              !string.IsNullOrEmpty(FinalExamError);
     
     // Commands
@@ -235,6 +257,28 @@ public class GradesViewModel : BaseViewModel
         else
         {
             Assignment1Error = string.Empty;
+        }
+    }
+    
+    private void ValidateCourseWork()
+    {
+        if (string.IsNullOrWhiteSpace(FormCourseWork))
+        {
+            CourseWorkError = string.Empty;
+            return;
+        }
+        
+        if (!double.TryParse(FormCourseWork, out var score))
+        {
+            CourseWorkError = "Please enter a valid number.";
+        }
+        else if (score < 0 || score > 100)
+        {
+            CourseWorkError = "Score must be between 0 and 100.";
+        }
+        else
+        {
+            CourseWorkError = string.Empty;
         }
     }
     
@@ -286,6 +330,7 @@ public class GradesViewModel : BaseViewModel
     {
         Assignment1Error = string.Empty;
         Assignment2Error = string.Empty;
+        CourseWorkError = string.Empty;
         FinalExamError = string.Empty;
     }
     
@@ -344,6 +389,7 @@ public class GradesViewModel : BaseViewModel
         FormCourseId = grade.CourseId;
         FormAssignment1 = grade.Assignment1?.ToString() ?? string.Empty;
         FormAssignment2 = grade.Assignment2?.ToString() ?? string.Empty;
+        FormCourseWork = grade.CourseWork?.ToString() ?? string.Empty;
         FormFinalExam = grade.FinalExam?.ToString() ?? string.Empty;
         FormTotalScore = grade.TotalScore;
         FormSymbolicGrade = grade.SymbolicGrade;
@@ -356,6 +402,7 @@ public class GradesViewModel : BaseViewModel
         FormCourseId = Courses.FirstOrDefault()?.Id ?? 0;
         FormAssignment1 = string.Empty;
         FormAssignment2 = string.Empty;
+        FormCourseWork = string.Empty;
         FormFinalExam = string.Empty;
         FormTotalScore = null;
         FormSymbolicGrade = null;
@@ -367,15 +414,31 @@ public class GradesViewModel : BaseViewModel
     {
         double? a1 = double.TryParse(FormAssignment1, out var v1) ? v1 : null;
         double? a2 = double.TryParse(FormAssignment2, out var v2) ? v2 : null;
-        double? final = double.TryParse(FormFinalExam, out var v3) ? v3 : null;
+        double? cw = double.TryParse(FormCourseWork, out var v3) ? v3 : null;
+        double? final = double.TryParse(FormFinalExam, out var v4) ? v4 : null;
         
-        if (a1.HasValue && a2.HasValue && final.HasValue && !HasErrors)
+        // Get course to check if all required fields are present
+        var course = Courses.FirstOrDefault(c => c.Id == FormCourseId);
+        if (course == null)
+        {
+            FormTotalScore = null;
+            FormSymbolicGrade = null;
+            FormLeniencyApplied = false;
+            return;
+        }
+        
+        bool isComplete = (course.CourseType == CourseType.Theoretical100 && a1.HasValue && a2.HasValue && cw.HasValue) ||
+                         (course.CourseType != CourseType.Theoretical100 && a1.HasValue && a2.HasValue && cw.HasValue && final.HasValue);
+        
+        if (isComplete && !HasErrors)
         {
             var tempGrade = new Grade
             {
                 Assignment1 = a1,
                 Assignment2 = a2,
-                FinalExam = final
+                CourseWork = cw,
+                FinalExam = final,
+                Course = course
             };
             _gradingService.CalculateGrade(tempGrade);
             FormTotalScore = tempGrade.TotalScore;
@@ -418,7 +481,8 @@ public class GradesViewModel : BaseViewModel
         
         double? a1 = double.TryParse(FormAssignment1, out var v1) ? v1 : null;
         double? a2 = double.TryParse(FormAssignment2, out var v2) ? v2 : null;
-        double? final = double.TryParse(FormFinalExam, out var v3) ? v3 : null;
+        double? cw = double.TryParse(FormCourseWork, out var v3) ? v3 : null;
+        double? final = double.TryParse(FormFinalExam, out var v4) ? v4 : null;
         
         using var context = new UniversityDbContext();
         
@@ -438,8 +502,12 @@ public class GradesViewModel : BaseViewModel
                 CourseId = FormCourseId,
                 Assignment1 = a1,
                 Assignment2 = a2,
+                CourseWork = cw,
                 FinalExam = final
             };
+            
+            // Load course for calculation
+            grade.Course = context.Courses.Find(FormCourseId);
             _gradingService.CalculateGrade(grade);
             context.Grades.Add(grade);
             context.SaveChanges();
@@ -448,11 +516,12 @@ public class GradesViewModel : BaseViewModel
         }
         else if (SelectedGrade != null)
         {
-            var grade = context.Grades.Find(SelectedGrade.Id);
+            var grade = context.Grades.Include(g => g.Course).FirstOrDefault(g => g.Id == SelectedGrade.Id);
             if (grade != null)
             {
                 grade.Assignment1 = a1;
                 grade.Assignment2 = a2;
+                grade.CourseWork = cw;
                 grade.FinalExam = final;
                 _gradingService.CalculateGrade(grade);
                 context.SaveChanges();

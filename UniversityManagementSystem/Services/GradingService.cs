@@ -4,48 +4,68 @@ namespace UniversityManagementSystem.Services;
 
 public class GradingService
 {
-    // Grade thresholds
-    private const double DistinctionThreshold = 85.0;
-    private const double MeritThreshold = 70.0;
-    private const double PassThreshold = 50.0;
+    // Grade thresholds based on PDF requirements (percentage-based)
+    private const double ExcellentThreshold = 85.0;     // ≥85%
+    private const double VeryGoodThreshold = 75.0;      // ≥75%
+    private const double GoodThreshold = 65.0;          // ≥65%
+    private const double PassThreshold = 60.0;          // ≥60%
     private const double LeniencyMargin = 2.0;
     
-    // Weight percentages
-    private const double Assignment1Weight = 0.20;
-    private const double Assignment2Weight = 0.20;
-    private const double FinalExamWeight = 0.60;
-    
     /// <summary>
-    /// Calculates the total score based on weighted components
+    /// Calculates the total score based on weighted components and course type
+    /// Based on PDF Grade Distribution table
     /// </summary>
-    public double CalculateTotalScore(double? assignment1, double? assignment2, double? finalExam)
+    public double CalculateTotalScore(Grade grade)
     {
-        if (!assignment1.HasValue || !assignment2.HasValue || !finalExam.HasValue)
+        if (grade.Course == null)
             return 0;
         
-        return (assignment1.Value * Assignment1Weight) +
-               (assignment2.Value * Assignment2Weight) +
-               (finalExam.Value * FinalExamWeight);
+        var courseType = grade.Course.CourseType;
+        
+        // Theoretical courses (out of 100): Ass1 20%, Ass2 20%, CW 60%, NO Final
+        if (courseType == CourseType.Theoretical100)
+        {
+            if (!grade.Assignment1.HasValue || !grade.Assignment2.HasValue || !grade.CourseWork.HasValue)
+                return 0;
+            
+            return (grade.Assignment1.Value * 0.20) +
+                   (grade.Assignment2.Value * 0.20) +
+                   (grade.CourseWork.Value * 0.60);
+        }
+        
+        // Practical courses (out of 150 or 100): Ass1 20%, Ass2 30%, CW 20%, Final 30%
+        if (!grade.Assignment1.HasValue || !grade.Assignment2.HasValue || 
+            !grade.CourseWork.HasValue || !grade.FinalExam.HasValue)
+            return 0;
+        
+        return (grade.Assignment1.Value * 0.20) +
+               (grade.Assignment2.Value * 0.30) +
+               (grade.CourseWork.Value * 0.20) +
+               (grade.FinalExam.Value * 0.30);
     }
     
     /// <summary>
-    /// Determines the symbolic grade based on total score
+    /// Determines the symbolic grade based on total score and course max degree
+    /// Based on PDF Grade Evaluation: ≥85% Excellent, ≥75% Very Good, ≥65% Good, ≥60% Pass
     /// </summary>
-    public string GetSymbolicGrade(double totalScore)
+    public string GetSymbolicGrade(double totalScore, int maxDegree)
     {
-        return totalScore switch
+        double percentage = (totalScore / maxDegree) * 100.0;
+        
+        return percentage switch
         {
-            >= DistinctionThreshold => "D",  // Distinction
-            >= MeritThreshold => "M",         // Merit
-            >= PassThreshold => "P",          // Pass
-            _ => "NA"                         // Not Achieved
+            >= ExcellentThreshold => "Excellent",
+            >= VeryGoodThreshold => "Very Good",
+            >= GoodThreshold => "Good",
+            >= PassThreshold => "Pass",
+            _ => "Fail"
         };
     }
     
     /// <summary>
     /// Checks if leniency can be applied based on improvement trend
     /// </summary>
-    public bool CanApplyLeniency(double totalScore, double? assignment1, double? assignment2)
+    public bool CanApplyLeniency(double percentage, double? assignment1, double? assignment2)
     {
         if (!assignment1.HasValue || !assignment2.HasValue)
             return false;
@@ -57,26 +77,29 @@ public class GradingService
             return false;
         
         // Check if within leniency margin of next grade boundary
-        bool nearDistinction = totalScore >= (DistinctionThreshold - LeniencyMargin) && totalScore < DistinctionThreshold;
-        bool nearMerit = totalScore >= (MeritThreshold - LeniencyMargin) && totalScore < MeritThreshold;
-        bool nearPass = totalScore >= (PassThreshold - LeniencyMargin) && totalScore < PassThreshold;
+        bool nearExcellent = percentage >= (ExcellentThreshold - LeniencyMargin) && percentage < ExcellentThreshold;
+        bool nearVeryGood = percentage >= (VeryGoodThreshold - LeniencyMargin) && percentage < VeryGoodThreshold;
+        bool nearGood = percentage >= (GoodThreshold - LeniencyMargin) && percentage < GoodThreshold;
+        bool nearPass = percentage >= (PassThreshold - LeniencyMargin) && percentage < PassThreshold;
         
-        return nearDistinction || nearMerit || nearPass;
+        return nearExcellent || nearVeryGood || nearGood || nearPass;
     }
     
     /// <summary>
     /// Applies leniency and returns the upgraded grade
     /// </summary>
-    public string ApplyLeniency(double totalScore)
+    public string ApplyLeniency(double percentage)
     {
-        if (totalScore >= (DistinctionThreshold - LeniencyMargin) && totalScore < DistinctionThreshold)
-            return "D";
-        if (totalScore >= (MeritThreshold - LeniencyMargin) && totalScore < MeritThreshold)
-            return "M";
-        if (totalScore >= (PassThreshold - LeniencyMargin) && totalScore < PassThreshold)
-            return "P";
+        if (percentage >= (ExcellentThreshold - LeniencyMargin) && percentage < ExcellentThreshold)
+            return "Excellent";
+        if (percentage >= (VeryGoodThreshold - LeniencyMargin) && percentage < VeryGoodThreshold)
+            return "Very Good";
+        if (percentage >= (GoodThreshold - LeniencyMargin) && percentage < GoodThreshold)
+            return "Good";
+        if (percentage >= (PassThreshold - LeniencyMargin) && percentage < PassThreshold)
+            return "Pass";
         
-        return GetSymbolicGrade(totalScore);
+        return "Fail";
     }
     
     /// <summary>
@@ -84,7 +107,7 @@ public class GradingService
     /// </summary>
     public void CalculateGrade(Grade grade)
     {
-        if (!grade.Assignment1.HasValue || !grade.Assignment2.HasValue || !grade.FinalExam.HasValue)
+        if (grade.Course == null || !grade.IsComplete)
         {
             grade.TotalScore = null;
             grade.SymbolicGrade = null;
@@ -92,17 +115,20 @@ public class GradingService
             return;
         }
         
-        grade.TotalScore = CalculateTotalScore(grade.Assignment1, grade.Assignment2, grade.FinalExam);
+        grade.TotalScore = CalculateTotalScore(grade);
+        
+        int maxDegree = grade.Course.MaxDegree;
+        double percentage = (grade.TotalScore.Value / maxDegree) * 100.0;
         
         // Check for leniency
-        if (CanApplyLeniency(grade.TotalScore.Value, grade.Assignment1, grade.Assignment2))
+        if (CanApplyLeniency(percentage, grade.Assignment1, grade.Assignment2))
         {
-            grade.SymbolicGrade = ApplyLeniency(grade.TotalScore.Value);
+            grade.SymbolicGrade = ApplyLeniency(percentage);
             grade.LeniencyApplied = true;
         }
         else
         {
-            grade.SymbolicGrade = GetSymbolicGrade(grade.TotalScore.Value);
+            grade.SymbolicGrade = GetSymbolicGrade(grade.TotalScore.Value, maxDegree);
             grade.LeniencyApplied = false;
         }
         
@@ -116,27 +142,49 @@ public class GradingService
     {
         return symbolicGrade switch
         {
-            "D" => "#4ADE80",  // Green - Distinction
-            "M" => "#60A5FA",  // Blue - Merit
-            "P" => "#FBBF24",  // Yellow - Pass
-            "NA" => "#F87171", // Red - Not Achieved
-            _ => "#A0A0A0"     // Gray - Unknown
+            "Excellent" => "#10B981",   // Green - Excellent
+            "Very Good" => "#3B82F6",   // Blue - Very Good
+            "Good" => "#F59E0B",        // Orange - Good
+            "Pass" => "#FBBF24",        // Yellow - Pass
+            "Fail" => "#EF4444",        // Red - Fail
+            _ => "#6B7280"              // Gray - Unknown
         };
     }
     
     /// <summary>
-    /// Gets the full grade name
+    /// Gets the full grade name (already using full names)
     /// </summary>
     public static string GetGradeName(string? symbolicGrade)
     {
-        return symbolicGrade switch
+        return symbolicGrade ?? "Not Graded";
+    }
+    
+    /// <summary>
+    /// Calculates GPA based on grades (4.0 scale)
+    /// </summary>
+    public static double CalculateGPA(IEnumerable<Grade> grades)
+    {
+        var completedGrades = grades.Where(g => g.IsComplete && g.SymbolicGrade != null).ToList();
+        
+        if (!completedGrades.Any())
+            return 0.0;
+        
+        double totalPoints = 0;
+        int totalCourses = completedGrades.Count;
+        
+        foreach (var grade in completedGrades)
         {
-            "D" => "Distinction",
-            "M" => "Merit",
-            "P" => "Pass",
-            "NA" => "Not Achieved",
-            _ => "Not Graded"
-        };
+            totalPoints += grade.SymbolicGrade switch
+            {
+                "Excellent" => 4.0,
+                "Very Good" => 3.5,
+                "Good" => 3.0,
+                "Pass" => 2.5,
+                _ => 0.0
+            };
+        }
+        
+        return totalPoints / totalCourses;
     }
 }
 

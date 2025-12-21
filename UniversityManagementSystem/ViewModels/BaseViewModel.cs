@@ -5,7 +5,29 @@ namespace UniversityManagementSystem.ViewModels;
 
 public abstract class BaseViewModel : INotifyPropertyChanged
 {
+    private bool _isLoading;
+    private string _errorMessage = string.Empty;
+    private string _successMessage = string.Empty;
+    
     public event PropertyChangedEventHandler? PropertyChanged;
+    
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set => SetProperty(ref _isLoading, value);
+    }
+    
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set => SetProperty(ref _errorMessage, value);
+    }
+    
+    public string SuccessMessage
+    {
+        get => _successMessage;
+        set => SetProperty(ref _successMessage, value);
+    }
     
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

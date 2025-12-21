@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "q4ot7gqgbsY=",
+  "dgSpecHash": "2JWNW8u2Mh0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Omar Mohamed\\Desktop\\ZIAD task\\UniversityManagementSystem\\UniversityManagementSystem.csproj",
+  "projectFilePath": "C:\\Users\\Omar Mohamed\\Desktop\\ZIAD task\\NCT_SIS\\UniversityManagementSystem\\UniversityManagementSystem.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Omar Mohamed\\.nuget\\packages\\communitytoolkit.mvvm\\8.2.2\\communitytoolkit.mvvm.8.2.2.nupkg.sha512",
     "C:\\Users\\Omar Mohamed\\.nuget\\packages\\harfbuzzsharp\\7.3.0\\harfbuzzsharp.7.3.0.nupkg.sha512",

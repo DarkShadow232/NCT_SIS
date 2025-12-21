@@ -18,6 +18,14 @@ public class UniversityDbContext : DbContext
     public DbSet<Exam> Exams { get; set; } = null!;
     public DbSet<Announcement> Announcements { get; set; } = null!;
     
+    // New models based on PDF requirements
+    public DbSet<Attendance> Attendances { get; set; } = null!;
+    public DbSet<LectureHall> LectureHalls { get; set; } = null!;
+    public DbSet<Laboratory> Laboratories { get; set; } = null!;
+    public DbSet<Specification> Specifications { get; set; } = null!;
+    public DbSet<AcademicYear> AcademicYears { get; set; } = null!;
+    public DbSet<AcademicCalendar> AcademicCalendars { get; set; } = null!;
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "university.db");
@@ -166,6 +174,84 @@ public class UniversityDbContext : DbContext
                   .WithMany()
                   .HasForeignKey(e => e.CreatedByUserId)
                   .OnDelete(DeleteBehavior.SetNull);
+        });
+        
+        // Attendance configuration
+        modelBuilder.Entity<Attendance>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Student)
+                  .WithMany()
+                  .HasForeignKey(e => e.StudentId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Course)
+                  .WithMany()
+                  .HasForeignKey(e => e.CourseId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Section)
+                  .WithMany(s => s.Attendances)
+                  .HasForeignKey(e => e.SectionId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasIndex(e => new { e.StudentId, e.CourseId, e.Date });
+        });
+        
+        // LectureHall configuration
+        modelBuilder.Entity<LectureHall>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Code).IsRequired().HasMaxLength(50);
+            entity.HasIndex(e => e.Code).IsUnique();
+            entity.HasOne(e => e.Department)
+                  .WithMany()
+                  .HasForeignKey(e => e.DepartmentId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasMany(e => e.Sections)
+                  .WithOne(s => s.LectureHall)
+                  .HasForeignKey(s => s.LectureHallId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+        
+        // Laboratory configuration
+        modelBuilder.Entity<Laboratory>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Code).IsRequired().HasMaxLength(50);
+            entity.HasIndex(e => e.Code).IsUnique();
+            entity.HasOne(e => e.Department)
+                  .WithMany()
+                  .HasForeignKey(e => e.DepartmentId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasMany(e => e.LabSections)
+                  .WithOne(s => s.Laboratory)
+                  .HasForeignKey(s => s.LaboratoryId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+        
+        // Specification configuration
+        modelBuilder.Entity<Specification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.ProductId).IsRequired().HasMaxLength(50);
+            entity.HasIndex(e => e.ProductId).IsUnique();
+        });
+        
+        // AcademicYear configuration
+        modelBuilder.Entity<AcademicYear>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Year).IsRequired().HasMaxLength(20);
+            entity.HasIndex(e => e.Year).IsUnique();
+            entity.HasMany(e => e.CalendarEvents)
+                  .WithOne(c => c.AcademicYear)
+                  .HasForeignKey(c => c.AcademicYearId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        // AcademicCalendar configuration
+        modelBuilder.Entity<AcademicCalendar>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
         });
     }
 }

@@ -14,11 +14,14 @@ public class Grade
     public double? Assignment2 { get; set; }
     
     [Range(0, 100)]
+    public double? CourseWork { get; set; }  // CW - Added based on PDF requirements
+    
+    [Range(0, 100)]
     public double? FinalExam { get; set; }
     
     public double? TotalScore { get; set; }
     
-    [MaxLength(10)]
+    [MaxLength(20)]
     public string? SymbolicGrade { get; set; }
     
     public bool LeniencyApplied { get; set; } = false;
@@ -36,9 +39,22 @@ public class Grade
     [ForeignKey(nameof(CourseId))]
     public virtual Course? Course { get; set; }
     
-    // Computed properties
+    // Computed properties based on PDF requirements
     [NotMapped]
-    public bool IsComplete => Assignment1.HasValue && Assignment2.HasValue && FinalExam.HasValue;
+    public bool IsComplete
+    {
+        get
+        {
+            if (Course == null) return false;
+            
+            // Theoretical courses don't have Final Exam
+            if (Course.CourseType == CourseType.Theoretical100)
+                return Assignment1.HasValue && Assignment2.HasValue && CourseWork.HasValue;
+            
+            // Practical courses have all components
+            return Assignment1.HasValue && Assignment2.HasValue && CourseWork.HasValue && FinalExam.HasValue;
+        }
+    }
     
     [NotMapped]
     public string StatusDisplay => IsComplete ? "Complete" : "Incomplete";
